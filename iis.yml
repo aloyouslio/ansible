@@ -13,7 +13,7 @@
 
   - name: apps IIS site
     win_iis_website:
-       name: Acme
+       name: apps
        state: started
        port: 80
        ip: 127.0.0.1
