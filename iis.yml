@@ -1,0 +1,24 @@
+- hosts: windows
+  tasks:
+
+  - name: Create directory structure
+    win_file:
+       path: C:\apps
+       state: directory
+
+  - name: create a new application pool in 'Started' state
+    win_iis_webapppool:
+       name: apps
+       state: started
+
+  - name: apps IIS site
+    win_iis_website:
+       name: Acme
+       state: started
+       port: 80
+       ip: 127.0.0.1
+       hostname: apps.local
+       application_pool: apps
+       physical_path: C:\apps
+       parameters: logfile.directory:C:\apps\logs
+       register: website
