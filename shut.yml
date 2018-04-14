@@ -1,0 +1,18 @@
+- hosts: all
+  gather_facts: False
+
+  tasks:
+  - name: Get info
+    setup:
+      filter: ansible_os_family 
+    register: os
+  - debug: var=os
+  - name: Shutdown of windows servers
+    win_shell: stop-computer -force
+    ignore_errors: yes
+    when: os.ansible_facts.ansible_os_family == "Windows" 
+
+  - name: Shutdown of Linux servers
+    command: shutdown now
+    ignore_errors: yes
+    when: os.ansible_facts.ansible_os_family == "RedHat" 
