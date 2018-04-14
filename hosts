@@ -1,0 +1,18 @@
+[windows]
+web1 ansible_host=192.168.0.220
+
+[linux]
+linux1 ansible_host=192.168.0.110
+v1 ansible_port=2222 ansible_host=192.168.56.1 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
+
+[windows:vars]
+ansible_ssh_user=passwordansible_ssh_pass=password
+ansible_ssh_port=5986
+ansible_connection=winrm
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+
+[linux:vars]
+ansible_connection=ssh
+ansible_ssh_user=root
+ansible_ssh_pass=password
