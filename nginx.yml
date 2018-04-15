@@ -2,27 +2,42 @@
 - hosts: linux
   remote_user: vagrant
   become: true
-  
+
   tasks:
   - name: install epel
-    yum: name=epel-release state=present
+    yum:
+      name: epel-release
+      state: present
   - name: install nginx
-    yum: name=nginx state=installed update_cache=true
+    yum:
+      name: nginx
+      state: installed
     notify:
       - start nginx
+  - name: check file
+    stat:
+      path: /usr/share/nginx/html/index.html
+    register: st
+  - name: save origin file before copy
+    copy:
+      src: /usr/share/nginx/html/index.html
+      dest: /usr/share/nginx/html/index.html.bak
+      remote_src: yes
+    when: st.stat.exists == True
+  - name: download file from github
+    get_url:
+      url: https://raw.githubusercontent.com/aloyouslio/ansible/master/files/Default.htm
+      dest: /usr/share/nginx/html/index.html
+      force: yes
+  - name: test nginx
+    uri:
+      url: http://127.0.0.1
+      return_content: yes
+
 
   handlers:
-  - name: restart nginx
-    service: 
-      name: nginx
-      state: restarted
-  - name: reload nginx
-    service: 
-      name: nginx
-      state: reloaded
   - name: start nginx
     service:
       name: nginx
       state: started
-      enabled: yes   
-
+      enabled: yes
