@@ -34,10 +34,11 @@
       url: http://127.0.0.1
       return_content: yes
 
-
-  handlers:
+handlers:
   - name: start nginx
     service:
       name: nginx
       state: started
       enabled: yes
+      
+      
