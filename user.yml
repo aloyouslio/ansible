@@ -1,0 +1,9 @@
+- hosts: windows
+  tasks:
+  - name: Ensure user bob is present
+    win_user:
+      name: ansible
+      password: password
+      state: present
+      groups:
+       - Administrators
