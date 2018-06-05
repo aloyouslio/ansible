@@ -1,0 +1,68 @@
+- hosts: windows
+  tasks:
+  - name: Download zabbix
+    win_get_url:
+      url: http://192.168.168.245/download/zabbix_agent-3.0.15_x64.msi
+      dest: 'C:\Windows\Temp\zabbix_agent-3.0.15_x64.msi'
+  - name: Install agent
+    win_msi:
+      path: C:\Windows\Temp\zabbix_agent-3.0.15_x64.msi
+      wait: true
+      creates: C:\Program Files\Zabbix Agent\zabbix_agentd.exe
+  - name: Stop Zabbix Agent service
+    win_service:
+      name: Zabbix Agent
+      state: stopped
+  - name: Download conf
+    win_get_url:
+      url: http://192.168.168.245/download/zabbix_agentd.conf
+      dest: 'C:\Program Files\Zabbix Agent\zabbix_agentd.conf'
+  - name: Start Zabbix Agent service
+    win_service:
+      name: Zabbix Agent
+      state: started
+  - name: Set Zabbix Agent service startup mode to auto and ensure it is started
+    win_service:
+      name: Zabbix Agent
+      start_mode: auto
+      state: started
+  - name: Firewall rule to allow TCP port 10050
+    win_firewall_rule:
+      name: Open Zabbix agentd port 10050 inbound
+      localport: 10050
+      action: allow
+      direction: in
+      protocol: tcp
+      state: present
+      enabled: yes
+  - name: Firewall rule to allow TCP port 10051
+    win_firewall_rule:
+      name: Open Zabbix agentd port 10051 inbound
+      localport: 10051
+      action: allow
+      direction: in
+      protocol: tcp
+      state: present
+      enabled: yes
+  - name: Firewall rule to allow TCP port 10050
+    win_firewall_rule:
+      name: Open Zabbix agentd port 10050 outbound
+      localport: 10050
+      action: allow
+      direction: out
+      protocol: tcp
+      state: present
+      enabled: yes
+  - name: Firewall rule to allow TCP port 10051
+    win_firewall_rule:
+      name: Open Zabbix agentd port 10051 outbound
+      localport: 10051
+      action: allow
+      direction: out
+      protocol: tcp
+      state: present
+      enabled: yes
+  - name: Get Hostname
+    raw: hostname
+    register: output
+  - debug: var=output.stdout
