@@ -1,0 +1,4 @@
+- hosts: windows
+  tasks:
+    - name: run powershell script
+      script: /root/ansible/files/powershell.ps1
